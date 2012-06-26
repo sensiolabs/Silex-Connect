@@ -1,0 +1,23 @@
+{
+    "name": "sensiolabs/silex-connect",
+    "type": "library",
+    "description": "A Silex service provider for SensioLabs Connect",
+    "keywords": ["Silex"],
+    "homepage": "http://connect.sensiolabs.com",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Fabien Potencier",
+            "email": "fabien@symfony.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3",
+        "sensiolabs/connect": "dev-master",
+        "marcw/buzz-service-provider": "dev-master"
+    },
+    "autoload": {
+        "psr-0": { "SensioLabs\\Connect\\Silex": "" }
+    },
+    "target-dir": "SensioLabs/Connect/Silex"
+}
