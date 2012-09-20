@@ -8,7 +8,6 @@ use Symfony\Component\HttpFoundation\Request;
 use SensioLabs\Connect\Security\Authentication\ConnectAuthenticationFailureHandler;
 use SensioLabs\Connect\Security\Authentication\Provider\ConnectAuthenticationProvider;
 use SensioLabs\Connect\Security\EntryPoint\ConnectEntryPoint;
-use SensioLabs\Connect\Security\Authentication\Token\ConnectToken;
 use SensioLabs\Connect\OAuthConsumer;
 use SensioLabs\Connect\Api\Api;
 use SensioLabs\Connect\Api\Parser\VndComSensiolabsConnectXmlParser;
