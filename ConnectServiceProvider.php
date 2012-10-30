@@ -73,7 +73,11 @@ class ConnectServiceProvider implements ServiceProviderInterface
             }
 
             if (!isset($app['security.authentication_listener.'.$name.'.sensiolabs_connect'])) {
-                $app['security.authentication_listener.'.$name.'.sensiolabs_connect'] = $app['security.authentication_listener.form._proto']($name, $options, 'SensioLabs\\Connect\\Security\\Firewall\\ConnectAuthenticationListener');
+                $options = array_replace(array(
+                    'listener_class' => 'SensioLabs\\Connect\\Security\\Firewall\\ConnectAuthenticationListener',
+                ), $options);
+
+                $app['security.authentication_listener.'.$name.'.sensiolabs_connect'] = $app['security.authentication_listener.form._proto']($name, $options);
                 $app['security.authentication_listener.'.$name.'.sensiolabs_connect'] = $app->share($app->extend('security.authentication_listener.'.$name.'.sensiolabs_connect', function ($listener, $app) use ($name) {
                     $listener->setApi($app['sensiolabs_connect.api']);
                     $listener->setOAuthConsumer($app['sensiolabs_connect.oauth_consumer']);
