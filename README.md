@@ -24,7 +24,7 @@ security configuration:
                 'logout' => true,
                 'users' => $app->share(function () use ($app) {
                     return new ConnectInMemoryUserProvider(array(
-                        '4aed4f5d-e0cb-4320-902f-885fddaa7d15' => array('ROLE_ADMIN'),
+                        '4aed4f5d-e0cb-4320-902f-885fddaa7d15' => array('ROLE_ADMIN', 'ROLE_CONNECT_USER'),
                     ));
                 }),
             ),
@@ -61,7 +61,7 @@ You can also get access to the API root object:
 
     $accessToken = $app['security']->getToken()->getAccessToken();
 
-    $root = $app['sensiolabs_connect.api']->getRoot($accessToken);
+    $root = $app['sensiolabs_connect.api']->getRoot();
     $user = $root->getCurrentUser();
 
 If you want to get the root API for the current user, you can just do the
