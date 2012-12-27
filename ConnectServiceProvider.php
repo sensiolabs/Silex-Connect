@@ -45,7 +45,7 @@ class ConnectServiceProvider implements ServiceProviderInterface
         });
 
         $app['sensiolabs_connect.api_root'] = $app->protect(function () use ($app) {
-            return $app['sensiolabs_connect.api']->getRoot($app['security']->getToken()->getAccessToken());
+            return $app['sensiolabs_connect.api']->getRoot();
         });
 
         $app['sensiolabs_connect.error_translator'] = $app->share(function () {
