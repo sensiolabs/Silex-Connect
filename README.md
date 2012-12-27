@@ -1,6 +1,13 @@
 SensioLabsConnect Silex Service Provider
 ========================================
 
+Installation
+------------
+
+Use [composer](http://getcomposer.org) to install the provider
+
+    php composer.phar require sensiolabs/silex-connect
+
 Usage
 -----
 
