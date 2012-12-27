@@ -5,12 +5,13 @@ namespace SensioLabs\Connect\Silex;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
+use SensioLabs\Connect\Api\Api;
+use SensioLabs\Connect\Api\Parser\VndComSensiolabsConnectXmlParser;
+use SensioLabs\Connect\Bridge\Symfony\Form\ErrorTranslator;
+use SensioLabs\Connect\OAuthConsumer;
 use SensioLabs\Connect\Security\Authentication\ConnectAuthenticationFailureHandler;
 use SensioLabs\Connect\Security\Authentication\Provider\ConnectAuthenticationProvider;
 use SensioLabs\Connect\Security\EntryPoint\ConnectEntryPoint;
-use SensioLabs\Connect\OAuthConsumer;
-use SensioLabs\Connect\Api\Api;
-use SensioLabs\Connect\Api\Parser\VndComSensiolabsConnectXmlParser;
 
 class ConnectServiceProvider implements ServiceProviderInterface
 {
@@ -44,7 +45,11 @@ class ConnectServiceProvider implements ServiceProviderInterface
         });
 
         $app['sensiolabs_connect.api_root'] = $app->protect(function () use ($app) {
-            return $app['sensiolabs_connect.api']->getRoot($app['security']->getToken()->getAccessToken());
+            return $app['sensiolabs_connect.api']->getRoot();
+        });
+
+        $app['sensiolabs_connect.error_translator'] = $app->share(function () {
+            return new ErrorTranslator();
         });
 
         $app['security.authentication_listener.factory.sensiolabs_connect'] = $app->protect(function ($name, $options) use ($app) {
