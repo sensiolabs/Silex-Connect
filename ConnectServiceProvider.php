@@ -2,6 +2,7 @@
 
 namespace SensioLabs\Connect\Silex;
 
+use Guzzle\Http\Client;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,7 +27,7 @@ class ConnectServiceProvider implements ServiceProviderInterface
                 $app['sensiolabs_connect.app_secret'],
                 $app['sensiolabs_connect.app_scope'],
                 $app['sensiolabs_connect.oauth_endpoint'],
-                $app['buzz'],
+                $app['sensiolabs_connect.guzzle'],
                 $app['logger']
             );
         });
@@ -38,7 +39,7 @@ class ConnectServiceProvider implements ServiceProviderInterface
         $app['sensiolabs_connect.api'] = $app->share(function () use ($app) {
             return new Api(
                 $app['sensiolabs_connect.api_endpoint'],
-                $app['buzz'],
+                $app['sensiolabs_connect.guzzle'],
                 $app['sensiolabs_connect.api_parser'],
                 $app['logger']
             );
@@ -98,6 +99,10 @@ class ConnectServiceProvider implements ServiceProviderInterface
                 'security.entry_point.sensiolabs_connect.'.$name,
                 'form'
             );
+        });
+
+        $app['sensiolabs_connect.guzzle'] = $app->share(function () {
+            return new Client();
         });
     }
 

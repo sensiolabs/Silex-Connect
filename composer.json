@@ -13,11 +13,19 @@
     ],
     "require": {
         "php": ">=5.3.3",
-        "sensiolabs/connect": "dev-master",
-        "marcw/buzz-service-provider": "dev-master"
+        "sensiolabs/connect": "dev-guzzle@dev"
+    },
+    "require-dev": {
+        "silex/silex": "~1.0"
     },
     "autoload": {
         "psr-0": { "SensioLabs\\Connect\\Silex": "" }
     },
-    "target-dir": "SensioLabs/Connect/Silex"
+    "target-dir": "SensioLabs/Connect/Silex",
+    "repositories": [
+        {
+            "type": "vcs",
+            "url":  "git@github.com:romainneutron/connect.git"
+        }
+    ]
 }
