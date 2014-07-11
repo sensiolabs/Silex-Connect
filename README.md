@@ -77,3 +77,31 @@ If you want to get the root API for the current user, you can just do the
 following:
 
     $root = $app['sensiolabs_connect.api_root']();
+
+Failures Handling
+-----------------
+
+> **Note**: this feature requires `sensiolabs/connect` `v3.0.0`
+
+Several errors can occurred during the OAuth dance, for example the user can
+deny your application or the scope you defined can be different from what you
+ selected while creating your application on SensioLabsConnect.
+Theses failures need to be handled.
+
+Since `sensiolabs/connect` `v3.0.0`, failures handling is restored to the default
+Symfony failure handling.
+
+Therefore, if an error occurred, the error is stored in the session (with a
+fallback on query attributes) and the user is redirected to the route/path
+specificed in `failure_path` entry of the `sensiolabs_connect` entry of your
+firewall.
+
+> **Warning**: You **need** to specifiy `failure_path`. If you don't, the user
+> will be redirected back to `/login`, meaning that may launch the
+> SensioLabsConnect authentication and redirect the user to SensioLabsConnect
+> which can lead to a redirection loop.
+
+This means you need to fetch the authencation error if there is one and display
+it. This is similar to what you do for a typical login form using the
+`security.last_error` services.
+You can refer to the `SecurityServiceProvider` documentation for more informations.
