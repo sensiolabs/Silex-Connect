@@ -11,6 +11,8 @@ Use [composer](http://getcomposer.org) to install the provider
 Usage
 -----
 
+> **Note:** You should registrer `BuzzServiceProvider` if needed
+
 Register the service provider on your app:
 
     $app->register(new ConnectServiceProvider(), array(
