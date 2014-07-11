@@ -9,7 +9,6 @@ use SensioLabs\Connect\Api\Api;
 use SensioLabs\Connect\Api\Parser\VndComSensiolabsConnectXmlParser;
 use SensioLabs\Connect\Bridge\Symfony\Form\ErrorTranslator;
 use SensioLabs\Connect\OAuthConsumer;
-use SensioLabs\Connect\Security\Authentication\ConnectAuthenticationFailureHandler;
 use SensioLabs\Connect\Security\Authentication\Provider\ConnectAuthenticationProvider;
 use SensioLabs\Connect\Security\EntryPoint\ConnectEntryPoint;
 
@@ -66,9 +65,7 @@ class ConnectServiceProvider implements ServiceProviderInterface
             }
 
             if (!isset($app['security.authentication.failure_handler.'.$name])) {
-                $app['security.authentication.failure_handler.'.$name] = $app->share(function () use ($app) {
-                    return new ConnectAuthenticationFailureHandler($app['security'], $app['logger']);
-                });
+                $app['security.authentication.failure_handler.'.$name] = $app['security.authentication.failure_handler._proto']($name, $options);
             }
 
             if (!isset($app['security.entry_point.sensiolabs_connect.'.$name])) {
