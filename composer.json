@@ -13,7 +13,7 @@
     ],
     "require": {
         "php": ">=5.3.3",
-        "sensiolabs/connect": "dev-master",
+        "sensiolabs/connect": "~2.1",
         "marcw/buzz-service-provider": "dev-master"
     },
     "autoload": {
