@@ -143,7 +143,7 @@ class ConnectServiceProvider implements ServiceProviderInterface
                 }),
             ));
             $app['data_collector.templates'] = array_merge($app['data_collector.templates'], array(
-                array('connect-sdk', '@ConnectSDK/Collector/connect.html.twig')
+                array('connect-sdk', '@ConnectSDK/Collector/connect-sdk.html.twig')
             ));
 
             $app['sensiolabs_connect.profiler.templates_path'] = $app->share(function () {
