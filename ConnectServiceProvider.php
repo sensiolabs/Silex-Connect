@@ -2,7 +2,8 @@
 
 namespace SensioLabs\Connect\Silex;
 
-use Guzzle\Http\Client;
+use Guzzle\Plugin\History\HistoryPlugin;
+use SensioLabs\Connect\Profiler\ConnectDataCollector;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,8 +19,9 @@ class ConnectServiceProvider implements ServiceProviderInterface
 {
     public function register(Application $app)
     {
-        $app['sensiolabs_connect.oauth_endpoint'] = 'https://connect.sensiolabs.com';
-        $app['sensiolabs_connect.api_endpoint'] = 'https://connect.sensiolabs.com/api';
+        $app['sensiolabs_connect.options'] = array();
+        $app['sensiolabs_connect.oauth_endpoint'] = OAuthConsumer::ENDPOINT;
+        $app['sensiolabs_connect.api_endpoint'] = Api::ENDPOINT;
 
         $app['sensiolabs_connect.oauth_consumer'] = $app->share(function () use ($app) {
             return new OAuthConsumer(
@@ -27,7 +29,7 @@ class ConnectServiceProvider implements ServiceProviderInterface
                 $app['sensiolabs_connect.app_secret'],
                 $app['sensiolabs_connect.app_scope'],
                 $app['sensiolabs_connect.oauth_endpoint'],
-                $app['sensiolabs_connect.guzzle'],
+                $app['sensiolabs_connect.guzzle-conf'],
                 $app['logger']
             );
         });
@@ -39,7 +41,7 @@ class ConnectServiceProvider implements ServiceProviderInterface
         $app['sensiolabs_connect.api'] = $app->share(function () use ($app) {
             return new Api(
                 $app['sensiolabs_connect.api_endpoint'],
-                $app['sensiolabs_connect.guzzle'],
+                $app['sensiolabs_connect.guzzle-conf'],
                 $app['sensiolabs_connect.api_parser'],
                 $app['logger']
             );
@@ -101,12 +103,60 @@ class ConnectServiceProvider implements ServiceProviderInterface
             );
         });
 
-        $app['sensiolabs_connect.guzzle'] = $app->share(function () {
-            return new Client();
+        $app['sensiolabs_connect.guzzle-plugins'] = array();
+
+        $app['sensiolabs_connect.guzzle-conf'] = $app->share(function (Application $app) {
+            return array(
+                'plugins'         => $app['sensiolabs_connect.guzzle-plugins'],
+                'timeout'         => $app['sensiolabs_connect.options-merged']['timeout'],
+                'connect_timeout' => $app['sensiolabs_connect.options-merged']['connect_timeout'],
+            );
+        });
+
+        $app['sensiolabs_connect.options-merged'] = $app->share(function (Application $app) {
+            return array_replace(array(
+                'connect_timeout' => \SensioLabs\Connect\CONNECT_TIMEOUT,
+                'timeout' => \SensioLabs\Connect\TRANSFERT_TIMEOUT,
+                'history-limit' => 1000,
+            ), $app['sensiolabs_connect.options']);
         });
     }
 
     public function boot(Application $app)
     {
+        if (isset($app['profiler'])) {
+            $app['sensiolabs_connect.guzzle-history-plugin'] = $app->share(function (Application $app) {
+                $plugin = new HistoryPlugin();
+                $plugin->setLimit($app['sensiolabs_connect.options-merged']['history-limit']);// (1000)
+
+                return $plugin;
+            });
+
+            $app['sensiolabs_connect.guzzle-plugins'] = array_merge(
+                $app['sensiolabs_connect.guzzle-plugins'],
+                array($app['sensiolabs_connect.guzzle-history-plugin'])
+            );
+
+            $app['data_collectors']= array_merge($app['data_collectors'], array(
+                'connect-sdk' => $app->share(function ($app) {
+                    return new ConnectDataCollector($app['sensiolabs_connect.guzzle-history-plugin']);
+                }),
+            ));
+            $app['data_collector.templates'] = array_merge($app['data_collector.templates'], array(
+                array('connect-sdk', '@ConnectSDK/Collector/connect.html.twig')
+            ));
+
+            $app['sensiolabs_connect.profiler.templates_path'] = $app->share(function () {
+                $ref = new \ReflectionClass('SensioLabs\Connect\Profiler\ConnectDataCollector');
+
+                return dirname($ref->getFileName()).'/Resources/views';
+            });
+
+            $app['twig.loader.filesystem'] = $app->share($app->extend('twig.loader.filesystem', function ($loader, $app) {
+                $loader->addPath($app['sensiolabs_connect.profiler.templates_path'], 'ConnectSDK');
+
+                return $loader;
+            }));
+        }
     }
 }

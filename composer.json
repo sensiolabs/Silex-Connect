@@ -13,7 +13,8 @@
     ],
     "require": {
         "php": ">=5.3.3",
-        "sensiolabs/connect": "dev-guzzle@dev"
+        "sensiolabs/connect": "dev-guzzle@dev",
+        "guzzle/plugin-history": "~3.0"
     },
     "require-dev": {
         "silex/silex": "~1.0"
