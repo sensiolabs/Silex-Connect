@@ -65,12 +65,6 @@ class ConnectServiceProvider implements ServiceProviderInterface
                 });
             }
 
-            if (!isset($app['security.authentication.failure_handler.'.$name])) {
-                $app['security.authentication.failure_handler.'.$name] = $app->share(function () use ($app) {
-                    return new ConnectAuthenticationFailureHandler($app['security'], $app['logger']);
-                });
-            }
-
             if (!isset($app['security.entry_point.sensiolabs_connect.'.$name])) {
                 $app['security.entry_point.sensiolabs_connect.'.$name] = $app->share(function () use ($app, $name) {
                     return new ConnectEntryPoint($app['sensiolabs_connect.oauth_consumer'], $app['security.http_utils'], $app['sensiolabs_connect.oauth_callback.'.$name]);

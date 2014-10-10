@@ -13,7 +13,7 @@
     ],
     "require": {
         "php": ">=5.3.3",
-        "sensiolabs/connect": "~2.1",
+        "sensiolabs/connect": "~4.0",
         "marcw/buzz-service-provider": "dev-master"
     },
     "autoload": {
@@ -22,7 +22,7 @@
     "target-dir": "SensioLabs/Connect/Silex",
     "extra": {
         "branch-alias": {
-            "dev-master": "1.0-dev"
+            "dev-master": "2.0-dev"
         }
     }
 }
